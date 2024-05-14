@@ -354,5 +354,21 @@ int q_merge(struct list_head *head, bool descend)
         return q_size(list_first_entry(head, queue_contex_t, chain)->q);
     }
     int queue_size = 0;
+    struct list_head *node = head->next;
+    while (node->next != head) {
+        queue_contex_t *q1, *q2;
+        q1 = list_entry(node, queue_contex_t, chain);
+        q2 = list_entry(node->next, queue_contex_t, chain);
+        queue_size = mergeTwoLists(q1->q, q2->q, descend);
+        list_splice_init(q1->q, q2->q);
+        list_move_tail(&q2->chain, head);
+        q1->size = 0;
+        node = node->next;
+    }
+    queue_contex_t *first = list_entry(head->next, queue_contex_t, chain);
+    queue_contex_t *last = list_entry(head->prev, queue_contex_t, chain);
+    list_splice_init(last->q, first->q);
+    first->size = last->size;
+    last->size = 0;
     return queue_size;
 }
