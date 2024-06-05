@@ -155,11 +155,7 @@ bool q_delete_dup(struct list_head *head)
             char *s2 = list_entry(entry->list.next, element_t, list)->value;
             match = strcmp(s1, s2) == 0;
         }
-        if (match) {
-            has_duplicate = match;
-            list_del(&entry->list);
-            q_release_element(entry);
-        } else if (has_duplicate) {
+        if (match || has_duplicate) {
             has_duplicate = match;
             list_del(&entry->list);
             q_release_element(entry);
